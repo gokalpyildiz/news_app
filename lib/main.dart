@@ -1,7 +1,10 @@
+// ignore_for_file: lines_longer_than_80_chars
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:news_app/feature/splash/splash_view.dart';
+import 'package:news_app/feature/auth/authentication_view.dart';
 import 'package:news_app/product/constants/index.dart';
+import 'package:news_app/product/initialize/app_theme.dart';
 import 'package:news_app/product/initialize/application_start.dart';
 
 Future<void> main() async {
@@ -17,10 +20,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: StringConstants.appName,
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const SplashView(),
+      theme: AppTheme(context).theme,
+      home: const AuthenticationView(),
     );
   }
 }
