@@ -9,6 +9,8 @@ import 'package:kartal/kartal.dart';
 
 import 'package:news_app/firebase_options.dart';
 
+import 'package:news_app/product/initialize/app_cache.dart';
+
 @immutable
 class ApplicationStart {
   const ApplicationStart._();
@@ -23,5 +25,6 @@ class ApplicationStart {
       GoogleProvider(clientId: '')
     ]);
     await DeviceUtility.deviceInit();
+    await AppCache.instance.setup();
   }
 }

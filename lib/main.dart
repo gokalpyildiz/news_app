@@ -2,8 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:news_app/feature/auth/authentication_view.dart';
+import 'package:news_app/feature/home/view/home_view.dart';
 import 'package:news_app/product/constants/index.dart';
+import 'package:news_app/product/initialize/app_builder.dart';
 import 'package:news_app/product/initialize/app_theme.dart';
 import 'package:news_app/product/initialize/application_start.dart';
 
@@ -18,10 +19,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      builder: (context, child) => AppBuilder(child).build(),
       title: StringConstants.appName,
       debugShowCheckedModeBanner: false,
       theme: AppTheme(context).theme,
-      home: const AuthenticationView(),
+      home: const HomeView(),
     );
   }
 }

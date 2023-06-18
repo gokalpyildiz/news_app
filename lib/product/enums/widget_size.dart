@@ -1,7 +1,8 @@
-enum ImageSizes {
-  high(256);
+enum WidgetSize {
+  buttonNormal(56),
+  iconNormal(30);
 
   final int value;
   // ignore: sort_constructors_first
-  const ImageSizes(this.value);
+  const WidgetSize(this.value);
 }

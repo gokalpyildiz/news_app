@@ -1,89 +1,208 @@
 // ignore_for_file: lines_longer_than_80_chars
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kartal/kartal.dart';
-import 'package:news_app/feature/home/model/news.dart';
-import 'package:news_app/product/utility/exception/custom_exception.dart';
+import 'package:news_app/feature/home/provider/home_provider.dart';
+import 'package:news_app/feature/home/view/subview/home_news_card.dart';
+import 'package:news_app/feature/home/view/subview/home_search_delegate.dart';
+import 'package:news_app/product/constants/color_constants.dart';
+import 'package:news_app/product/constants/string_constants.dart';
+import 'package:news_app/product/models/tag.dart';
+import 'package:news_app/product/widget/card/recommended_card.dart';
+import 'package:news_app/product/widget/text/sub_title_text.dart';
+import 'package:news_app/product/widget/text/title_text.dart';
 
-class HomeView extends StatefulWidget {
+part './subview/home_chips.dart';
+
+final _homeProvider = StateNotifierProvider<HomeNotifier, HomeState>((ref) {
+  return HomeNotifier();
+});
+
+class HomeView extends ConsumerStatefulWidget {
   const HomeView({super.key});
 
   @override
-  State<HomeView> createState() => _HomeViewState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _HomeViewState();
 }
 
-class _HomeViewState extends State<HomeView> {
-  //1 Future builder
-  //2 datayı init olduğu anda çekip setstate ile göstermek
+class _HomeViewState extends ConsumerState<HomeView> {
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      ref.read(_homeProvider.notifier).fetchAndLoad();
+    });
+    //
+    ref.read(_homeProvider.notifier).addListener((state) {
+      if (state.selectedTag != null) {
+        _controller.text = state.selectedTag?.name ?? '';
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: const _HomeListView(),
+      body: SafeArea(
+        child: Stack(
+          children: [
+            ListView(
+              padding: context.paddingNormal,
+              children: [
+                const _Header(),
+                _CustomField(_controller),
+                const _TagListView(),
+                const _BrowseHorizontalListView(),
+                const _RecommendedHeader(),
+                const _RecommendedListView(),
+              ],
+            ),
+            if (ref.watch(_homeProvider).isLoading ?? false) const Center(child: CircularProgressIndicator())
+          ],
+        ),
+      ),
     );
   }
 }
 
-class _HomeListView extends StatelessWidget {
-  const _HomeListView();
+class _CustomField extends ConsumerWidget {
+  const _CustomField(this.controller);
+  final TextEditingController controller;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return TextField(
+      controller: controller,
+      onTap: () async {
+        final response = await showSearch<Tag?>(
+          context: context,
+          delegate: HomeSearchDelegate(
+            ref.read(_homeProvider.notifier).fullTagList,
+          ),
+        );
+        ref.read(_homeProvider.notifier).updateSelectedTag(response);
+      },
+      decoration: const InputDecoration(
+        suffixIcon: Icon(Icons.mic_outlined),
+        prefixIcon: Icon(Icons.search_off_outlined),
+        border: OutlineInputBorder(
+          borderSide: BorderSide.none,
+        ),
+        filled: true,
+        fillColor: ColorConstants.grayLighter,
+        hintText: StringConstants.homeSearchHint,
+      ),
+    );
+  }
+}
+
+class _TagListView extends ConsumerWidget {
+  const _TagListView();
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final newsItems = ref.watch(_homeProvider).tags ?? [];
+    return SizedBox(
+      height: context.dynamicHeight(.1),
+      child: ListView.builder(
+        itemCount: newsItems.length,
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (BuildContext context, int index) {
+          final tagItem = newsItems[index];
+          if (tagItem.active ?? false) {
+            return _ActiveChip(tagItem);
+          }
+          return _PassiveChip(tagItem);
+        },
+      ),
+    );
+  }
+}
+
+class _BrowseHorizontalListView extends ConsumerWidget {
+  const _BrowseHorizontalListView();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final newsItems = ref.watch(_homeProvider).news;
+    return SizedBox(
+      height: context.dynamicHeight(.3),
+      child: ListView.builder(
+        itemCount: newsItems?.length ?? 0,
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (BuildContext context, int index) {
+          return HomeNewsCard(newsItem: newsItems?[index]);
+        },
+      ),
+    );
+  }
+}
+
+class _RecommendedHeader extends StatelessWidget {
+  const _RecommendedHeader();
 
   @override
   Widget build(BuildContext context) {
-    // ignore: lines_longer_than_80_chars
-    final CollectionReference news = FirebaseFirestore.instance.collection('news');
-    final response = news.withConverter(
-      fromFirestore: (snapshot, options) {
-        //final jsonBody = snapshot.data();
-        // if (jsonBody != null) {
-        //   //.. ne işe yarıyor anlamadım herhalde geri döndürüyoe debug modda bakarsın.
-        //   return News.fromJson(jsonBody)..copyWith();
-        // }
-        // return null;
-        //üstteki kullanımın temiz hali-copyWith() içinen id falan da girmemiz lazımdı
-        //yukakrısı tamamlanmış hali değil
-        return const News().fromFirebase(snapshot);
+    return Padding(
+      padding: context.onlyTopPaddingLow,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Expanded(
+            child: TitleText(value: StringConstants.homeTitle),
+          ),
+          TextButton(
+            onPressed: () {},
+            child: const SubTitleText(value: StringConstants.homeSeeAll),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class _RecommendedListView extends ConsumerWidget {
+  const _RecommendedListView();
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final values = ref.watch(_homeProvider).recommended ?? [];
+    return ListView.builder(
+      itemCount: values.length,
+      shrinkWrap: true,
+      physics: const ClampingScrollPhysics(),
+      itemBuilder: (BuildContext context, int index) {
+        return RecommendedCard(recommended: values[index]);
       },
-      toFirestore: (value, options) {
-        if (value == null) FirebaseCustomException('Value not null');
-        return value.toJson();
-      },
-    ).get();
-    return FutureBuilder(
-      //future: news.get(),
-      future: response,
-      builder: (context, snapshot) {
-        switch (snapshot.connectionState) {
-          case ConnectionState.none:
-            return const Placeholder();
-          case ConnectionState.waiting:
-          case ConnectionState.active:
-            return const LinearProgressIndicator();
-          case ConnectionState.done:
-            if (snapshot.hasData) {
-              // ignore: lines_longer_than_80_chars
-              final values = snapshot.data!.docs.map((e) => e.data()).toList();
-              return ListView.builder(
-                itemCount: values.length,
-                itemBuilder: (context, index) {
-                  return Card(
-                    child: Column(
-                      children: [
-                        Image.network(
-                          values[index].backgroundImage ?? '',
-                          height: context.dynamicHeight(0.1),
-                        ),
-                        Text(values[index].title ?? '', style: context.textTheme.labelLarge)
-                      ],
-                    ),
-                  );
-                },
-              );
-            } else {
-              return const SizedBox();
-            }
-        }
-      },
+    );
+  }
+}
+
+class _Header extends StatelessWidget {
+  const _Header();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const TitleText(
+          value: StringConstants.homeBrowse,
+        ),
+        Padding(
+          padding: context.onlyTopPaddingLow,
+          child: const SubTitleText(
+            value: StringConstants.homeMessage,
+          ),
+        ),
+      ],
     );
   }
 }
