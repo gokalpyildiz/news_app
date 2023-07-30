@@ -6,6 +6,7 @@ import 'package:kartal/kartal.dart';
 import 'package:news_app/feature/home/provider/home_provider.dart';
 import 'package:news_app/feature/home/view/subview/home_news_card.dart';
 import 'package:news_app/feature/home/view/subview/home_search_delegate.dart';
+import 'package:news_app/feature/home_create/home_create_view.dart';
 import 'package:news_app/product/constants/color_constants.dart';
 import 'package:news_app/product/constants/string_constants.dart';
 import 'package:news_app/product/models/tag.dart';
@@ -51,25 +52,43 @@ class _HomeViewState extends ConsumerState<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Stack(
-          children: [
-            ListView(
-              padding: context.paddingNormal,
+    debugPrint('Build oldu');
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Scaffold(
+          floatingActionButton: FloatingActionButton(
+            child: const Icon(Icons.add),
+            onPressed: () async {
+              final response = await context.navigateToPage<bool?>(
+                const HomeCreateView(),
+                type: SlideType.BOTTOM,
+              );
+
+              if (response ?? false) {
+                await ref.read(_homeProvider.notifier).fetchAndLoad();
+              }
+            },
+          ),
+          body: SafeArea(
+            child: Stack(
               children: [
-                const _Header(),
-                _CustomField(_controller),
-                const _TagListView(),
-                const _BrowseHorizontalListView(),
-                const _RecommendedHeader(),
-                const _RecommendedListView(),
+                ListView(
+                  padding: context.paddingNormal,
+                  children: [
+                    const _Header(),
+                    _CustomField(_controller),
+                    const _TagListView(),
+                    const _BrowseHorizontalListView(),
+                    const _RecommendedHeader(),
+                    const _RecommendedListView(),
+                  ],
+                ),
+                if (ref.watch(_homeProvider).isLoading ?? false) const Center(child: CircularProgressIndicator())
               ],
             ),
-            if (ref.watch(_homeProvider).isLoading ?? false) const Center(child: CircularProgressIndicator())
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

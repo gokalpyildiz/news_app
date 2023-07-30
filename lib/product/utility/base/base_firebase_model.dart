@@ -1,4 +1,4 @@
-//bundan türeyen bütün metottlarımda olmasını istediğim bir özellik var.İskelet olarak kullannacağımız için abstract dedik.
+//bundan türeyen bütün metottlarımda olmasını istediğim bir özellik var.İskelet olarak kullanacağımız için abstract dedik.
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:news_app/product/utility/exception/custom_exception.dart';

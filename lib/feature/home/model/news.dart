@@ -75,6 +75,7 @@ class News extends Equatable with IdModel, BaseFirebaseModel<News> {
   @override
   List<Object?> get props => [id, category, categoryId, title, backgroundImage];
 
+  //override a gerek var mı
   @override
   News fromJson(Map<String, dynamic> json) {
     return News(

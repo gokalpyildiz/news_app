@@ -16,3 +16,13 @@ class ResponsibilityConstants {
   final mediumScreenSize = 600;
   final largeScreenSize = 900;
 }
+
+// class ResponsibilityConstants {
+//   ResponsibilityConstants._init();
+//   static final ResponsibilityConstants _instace=ResponsibilityConstants._init();
+//   static ResponsibilityConstants get instance =>_instace;
+
+//   final smallScreenSize = 300;
+//   final mediumScreenSize = 600;
+//   final largeScreenSize = 900;
+// }
