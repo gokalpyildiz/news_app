@@ -27,10 +27,11 @@ class HomeLogic with FirebaseUtility {
   void updateCategory(CategoryModel categoryModel) {
     _categoryModel = categoryModel;
   }
-
+  //bool checkValidateAndSave(void Function({bool value})? onUpdate) {
   bool checkValidateAndSave(ValueSetter<bool>? onUpdate) {
     final value = formKey.currentState?.validate() ?? false;
 
+    //alanları dolduruyoruz mesela ve durum sürekli invalidse tekrar tekrar ekranı tetiklememek için. 
     if (value != isValidateAllForm && selectedFileBytes != null) {
       isValidateAllForm = value;
       onUpdate?.call(value);
@@ -67,6 +68,7 @@ class HomeLogic with FirebaseUtility {
     final imageReference = createImageReference();
     if (imageReference == null) throw ItemCreateException('image not empty');
     if (_selectedFileBytes == null) return false;
+    //resim yükleme
     await imageReference.putData(_selectedFileBytes!);
     final urlPath = await imageReference.getDownloadURL();
     final response = await FirebaseCollections.news.reference.add(

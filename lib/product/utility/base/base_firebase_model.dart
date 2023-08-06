@@ -9,7 +9,7 @@ abstract class IdModel {
   String? get id;
 }
 
-//%100 idsi olmak zoruunda olduğu için ekledik IdModeli
+//%100 idsi olmak zoruunda olduğu için ekledik IdModeli. Basefirebasemodelden türeyen bütün modellerde id olmak zorunda
 abstract class BaseFirebaseModel<T extends IdModel> {
   T fromJson(Map<String, dynamic> json);
 
@@ -20,7 +20,8 @@ abstract class BaseFirebaseModel<T extends IdModel> {
       //return null;
       throw FirebaseCustomException('Snapshow data is null');
     }
-    //fixme
+    //addEntries ile value mapine başka bir map itemı ekliyoruz.
+    //fixme-bu haliyle de gayet kullanışlı ama nasıl bir geliştirme yaparız bilemem.
     value.addEntries([MapEntry('id', snapshot.id)]);
     return fromJson(value);
   }

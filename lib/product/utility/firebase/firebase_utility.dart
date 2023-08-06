@@ -7,6 +7,7 @@ import 'package:news_app/product/utility/firebase/firebase_collections.dart';
 mixin FirebaseUtility {
   //T idmodelten türeyecek.T parse etmek istediğim data tipi.
   //sonuç olarak önce T diye bir generic tip ver.İkinci olarak bir tane daha tip ver R adında
+  //Kullanacağımız generic tiplerin ne olduğunu <> içinde belirtmiş oluyoruz gibi anladım.
   Future<List<T>?> fetchList<T extends IdModel, R extends BaseFirebaseModel<T>>(
     R data,
     FirebaseCollections collections,
@@ -17,7 +18,7 @@ mixin FirebaseUtility {
         return data.fromFirebase(snapshot);
       },
       toFirestore: (value, options) {
-        //kullanmadığımız için bu şekilde bırktık.fromfirebasede olduğu gibi tosjon da ekleneblir
+        //kullanmadığımız için bu şekilde bıraktık.fromfirebasede olduğu gibi tosjon da ekleneblir
         //return value.toJson();
         return {};
       },

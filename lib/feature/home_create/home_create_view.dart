@@ -111,6 +111,8 @@ class _HomeCreateViewState extends State<HomeCreateView> with Loading {
                         final response = await _homeLogic.save();
                         changeLoading();
                         if (!mounted) return;
+                        //response döndürmesi ne anlama geliyor ne işe yarıyor anlamadım. Buraya gelen navigatein respose una bu değer gidiyor bool değil başka değer
+                        //de olabilirdi. Hiç kullandığım bir yöntem değil.Ama güzel kullanım.
                         await context.pop<bool>(response);
                       },
                 icon: const Icon(Icons.send),
@@ -124,6 +126,7 @@ class _HomeCreateViewState extends State<HomeCreateView> with Loading {
   }
 }
 
+//sayfadaki emtysizedboxların yönetimini kolaylaştırmak için.
 class _EmptySizeBox extends StatelessWidget {
   const _EmptySizeBox();
 
@@ -139,6 +142,7 @@ class _HomeCategoryDropDown extends StatelessWidget {
     required this.onSelected,
   });
   final List<CategoryModel> categories;
+  //CategoryModel vericem
   final ValueSetter<CategoryModel> onSelected;
   @override
   Widget build(BuildContext context) {

@@ -62,10 +62,12 @@ class _SplashViewState extends ConsumerState<SplashView> with _SplashViewListenM
   }
 }
 
+
 mixin _SplashViewListenMixin on ConsumerState<SplashView> {
   void listenAndNavigate(
     StateNotifierProvider<SplashProvider, SplashState> provider,
   ) {
+    //state değişimini dinliyoruz herhalde. previous buygu ama artık o değil nextle gelen gibi birşey.Şimdilik previousla işimiz yok.
     ref.listen(provider, (previous, next) {
       if (next.isRequiredForceUpdate ?? false) {
         showAboutDialog(context: context);

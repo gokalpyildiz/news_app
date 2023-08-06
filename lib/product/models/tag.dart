@@ -36,6 +36,8 @@ class Tag with EquatableMixin, IdModel, BaseFirebaseModel<Tag> {
     };
   }
 
+  //factorynin içinde fromjason vardı ama factorye çok gerek kalamıyor diyip sildik
+  //lesson 7 dk 30 34 arası
   @override
   Tag fromJson(Map<String, dynamic> json) {
     return Tag(

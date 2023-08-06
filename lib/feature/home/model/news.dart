@@ -10,16 +10,7 @@ class News extends Equatable with IdModel, BaseFirebaseModel<News> {
     this.backgroundImage,
   });
 
-  //en alta ekledik buna artık gerek yok
-  // factory News.fromJson(Map<String, dynamic> json) {
-  //   return News(
-  //     id: json['id'] as String?,
-  //     category: json['category'] as String?,
-  //     categoryId: json['categoryId'] as String?,
-  //     title: json['title'] as String?,
-  //     backgroundImage: json['backgroundImage'] as String?,
-  //   );
-  // }
+
   @override
   final String? id;
   final String? category;
@@ -74,6 +65,16 @@ class News extends Equatable with IdModel, BaseFirebaseModel<News> {
 
   @override
   List<Object?> get props => [id, category, categoryId, title, backgroundImage];
+    //en alta ekledik buna artık gerek yok. Ne farkı var ?-BAsefirebasemodelden extend edince fromjasonda bu şekilde değişiklik yaptık.
+  // factory News.fromJson(Map<String, dynamic> json) {
+  //   return News(
+  //     id: json['id'] as String?,
+  //     category: json['category'] as String?,
+  //     categoryId: json['categoryId'] as String?,
+  //     title: json['title'] as String?,
+  //     backgroundImage: json['backgroundImage'] as String?,
+  //   );
+  // }
 
   //override a gerek var mı
   @override

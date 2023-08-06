@@ -3,10 +3,10 @@ import 'package:equatable/equatable.dart';
 
 import 'package:news_app/product/utility/base/base_firebase_model.dart';
 
-class Number extends Equatable with IdModel, BaseFirebaseModel<Number> {
+class NumberModel extends Equatable with IdModel, BaseFirebaseModel<NumberModel> {
   final String? number;
 
-  Number({
+  NumberModel({
     this.number,
   });
   @override
@@ -14,10 +14,10 @@ class Number extends Equatable with IdModel, BaseFirebaseModel<Number> {
   //String? get id => '';
   //altaki gibi dezabiliriz önemli değil
   String? id = '';
-  Number copyWith({
+  NumberModel copyWith({
     String? number,
   }) {
-    return Number(
+    return NumberModel(
       number: number ?? this.number,
     );
   }
@@ -36,9 +36,9 @@ class Number extends Equatable with IdModel, BaseFirebaseModel<Number> {
   // }
 
   @override
-  Number fromJson(Map<String, dynamic> json) {
+  NumberModel fromJson(Map<String, dynamic> json) {
     // TODO: üstteki fromjsondan aldık.
-    return Number(
+    return NumberModel(
       number: json['number'] as String?,
     );
   }

@@ -18,6 +18,8 @@ class HomeNotifier extends StateNotifier<HomeState> with FirebaseUtility {
     final newsCollectionReference = FirebaseCollections.news.reference;
     final response = await newsCollectionReference.withConverter(
       fromFirestore: (snapshot, options) {
+        //return const News().fromFirebase(snapshot).copyWith(id: snapshot.id);
+        //üstteki gibi heryerde yazmamak için base firebase model oluşturdu ve id aktarma işlemi heryerde otomatikleşti.
         return const News().fromFirebase(snapshot);
       },
       toFirestore: (value, options) {

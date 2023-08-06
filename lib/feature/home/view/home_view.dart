@@ -16,6 +16,7 @@ import 'package:news_app/product/widget/text/title_text.dart';
 
 part './subview/home_chips.dart';
 
+//bunu splashde içeri yazmıştık burad dışarıya yazdık. neden olduğunu tam bilmiyor ama genelde dışarıya yazıyorlarmış emre altunbilekten bak
 final _homeProvider = StateNotifierProvider<HomeNotifier, HomeState>((ref) {
   return HomeNotifier();
 });
@@ -42,7 +43,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
     Future.microtask(() {
       ref.read(_homeProvider.notifier).fetchAndLoad();
     });
-    //
+    //selectedtag değişince gel set et
     ref.read(_homeProvider.notifier).addListener((state) {
       if (state.selectedTag != null) {
         _controller.text = state.selectedTag?.name ?? '';
@@ -52,7 +53,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('Build oldu');
+    debugPrint('Build oldu');//mediaquey.ofsize kullan
     return LayoutBuilder(
       builder: (context, constraints) {
         return Scaffold(
@@ -146,6 +147,7 @@ class _TagListView extends ConsumerWidget {
   }
 }
 
+//bu widget normalde stataless widgettı.refe erişemediğimiz için consumerwidgeta çevirdik. ConsumerStatefulWidget ın stateless hali gibi herhalde.
 class _BrowseHorizontalListView extends ConsumerWidget {
   const _BrowseHorizontalListView();
 

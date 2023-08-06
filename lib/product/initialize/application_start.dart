@@ -12,19 +12,21 @@ import 'package:news_app/firebase_options.dart';
 import 'package:news_app/product/initialize/app_cache.dart';
 
 @immutable
+//sadece mainden görülmesi için part part of da kulllanabiliriz
 class ApplicationStart {
   const ApplicationStart._();
   static Future<void> init() async {
     WidgetsFlutterBinding.ensureInitialized();
+    await DeviceUtility.deviceInit();
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
     FirebaseUIAuth.configureProviders([
       EmailAuthProvider(),
       //google facebook gibi login işlemleri için de paketlerini eklemek gerekiyor
+      //client id dokumanda da söylüyor google.info plist mi ney onun içinde varmış.
       GoogleProvider(clientId: '')
     ]);
-    await DeviceUtility.deviceInit();
     await AppCache.instance.setup();
   }
 }
